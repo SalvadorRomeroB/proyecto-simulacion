@@ -1,0 +1,108 @@
+@import "~bootstrap/scss/bootstrap";
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background-color: #1f4287;
+}
+
+.rest-body {
+  min-height: 100vh;
+}
+
+.container {
+  background-color: #278ea5;
+}
+
+.header {
+  text-align: center;
+  font-size: 100%;
+  background-color: #071e3d;
+  color: #21e6c1;
+}
+
+.row.d-flex.justify-content-between.inputs {
+  padding: 0 1rem;
+}
+
+.row.number {
+  height: 100px;
+}
+
+.number-list {
+  margin: 0 10px;
+}
+
+.btn-primary {
+  color: #000;
+  background-color: #21e6c1;
+  border-color: #21e6c1;
+}
+
+.btn-primary:hover {
+  color: #000;
+  background-color: #21e6c1;
+  border-color: #21e6c1;
+}
+.btn-primary:active {
+  color: #000;
+  background-color: #21e6c1;
+  border-color: #21e6c1;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: #16181b;
+  text-decoration: none;
+  background-color: #278ea5;
+}
+
+.dropdown-link {
+  color: #21e6c1;
+}
+
+.show > .btn-primary.dropdown-toggle {
+  color: #000;
+  background-color: #278ea5;
+  border-color: #278ea5;
+}
+
+.header > h1 {
+  margin: 0;
+}
+
+.dropdown-menu {
+  background-color: #1f4287;
+}
+
+.nav-link {
+  color: black;
+}
+
+.App-link {
+  color: #5d5e5e;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
