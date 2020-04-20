@@ -140,29 +140,30 @@ const MetodoTransformadaInversa = () => {
   };
 
   return (
-    <div className="container">
-      <div className="row d-flex justify-content-center">
-        <h1>Transformada Inversa</h1>
+    <div className="row">
+      <div className="d-flex justify-content-center">
+        <h1>Metodo de transformada Inversa</h1>
       </div>
-      <div className="form-group">
-        <div className="input-group mb-3">
-          <div className="input-group-prepend">
-            <span className="input-group-text" id="basic-addon1">
-              Input (R):{" "}
-            </span>
-          </div>
-          <textarea id="list" onChange={(e) => setRawList(e.target.value)} />
-          <div className="input-group-append">
-            <span className="input-group-text" id="basic-addon2">
-              CSV
-            </span>
+      <div className="col-6 form-group">
+        <div className="d-flex flex-column">
+          <label for="csv">
+            Ingresa los numeros separados por comas y luego elija la
+            distribucion correspondiente:
+          </label>
+          <div className="d-flex">
+            <textarea
+              id="csv"
+              type="text"
+              value={rawList}
+              onChange={(e) => setRawList(e.target.value)}
+            />
           </div>
         </div>
 
         <div className="row">
           <div className="dropdown">
             <button
-              className="btn btn-secondary dropdown-toggle"
+              className="btn btn-primary dropdown-toggle"
               type="button"
               id="dropdownMenuButton"
               data-toggle="dropdown"
@@ -199,22 +200,18 @@ const MetodoTransformadaInversa = () => {
             </div>
           </div>
         </div>
-
-        <div className="row">
-          <span className="col">{distFormulaStr}</span>
-        </div>
       </div>
 
       {/* UNIFORME */}
       {distSelected === 1 && (
-        <div className="row">
-          <div className="form-group">
+        <div>
+          <div>
+            <h3 className="col-12">{distFormulaStr}</h3>
+          </div>
+          <div className="col-8 form-group">
             <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon1">
-                  a:{" "}
-                </span>
-              </div>
+              <h3>a: </h3>
+
               <input
                 type="number"
                 min="100"
@@ -224,11 +221,7 @@ const MetodoTransformadaInversa = () => {
             </div>
 
             <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon1">
-                  (b - a):{" "}
-                </span>
-              </div>
+              <h3>(b-a): </h3>
               <input
                 type="number"
                 min="100"
@@ -269,14 +262,13 @@ const MetodoTransformadaInversa = () => {
       )}
       {/* EXPONENCIAL */}
       {distSelected === 2 && (
-        <div className="row">
-          <div className="form-group">
+        <div>
+          <div>
+            <h3 className="col-12">{distFormulaStr}</h3>
+          </div>
+          <div className="col-8 form-group">
             <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon1">
-                  𝜆 :{" "}
-                </span>
-              </div>
+              <h3>𝜆 : </h3>
               <input
                 type="number"
                 min="100"
@@ -317,25 +309,17 @@ const MetodoTransformadaInversa = () => {
       )}
       {/* BERNOULLI */}
       {distSelected === 3 && (
-        <div className="row">
-          <div className="form-group">
+        <div>
+          <div>
+            <h3 className="col-12">{distFormulaStr}</h3>
+          </div>
+          <div className="col-8 form-group">
             <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon1">
-                  P:{" "}
-                </span>
-              </div>
+              <h3>P(Probabilidad de exito): </h3>
               <input
                 type="number"
-                min="100"
-                max="999999"
                 onChange={(e) => setBerVarSuccess(e.target.value * 1)}
               />
-              <div className="input-group-append">
-                <span className="input-group-text" id="basic-addon1">
-                  % [Probabilidad de éxito] :{" "}
-                </span>
-              </div>
             </div>
 
             <div className="input-group mb-3">
@@ -370,39 +354,26 @@ const MetodoTransformadaInversa = () => {
       )}
       {/* POISSON */}
       {distSelected === 4 && (
-        <div className="row">
-          <div className="form-group">
+        <div>
+          <div>
+            <h3 className="col-12">{distFormulaStr}</h3>
+          </div>
+          <div className="col-6 form-group">
             <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon1">
-                  𝜆 :{" "}
-                </span>
-              </div>
+              <h3>𝜆 : </h3>
+
               <input
                 type="number"
-                min="100"
-                max="999999"
                 onChange={(e) => setPoiVarDelta(e.target.value * 1)}
               />
             </div>
 
+            <h4>N(Numero de probabilidades a calcular) : </h4>
             <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon1">
-                  N :{" "}
-                </span>
-              </div>
               <input
                 type="number"
-                min="100"
-                max="999999"
                 onChange={(e) => setPoiVarProbSize(e.target.value * 1)}
               />
-              <div className="input-group-append">
-                <span className="input-group-text" id="basic-addon2">
-                  Probabilidades a calcular
-                </span>
-              </div>
             </div>
 
             <div className="input-group mb-3">
@@ -443,34 +414,27 @@ export default MetodoTransformadaInversa;
 
 /*
 UNI
-
 0.48,
 0.82,
 0.69,
 0.67,
 0
-
 EXP
 0.64,
 0.83,
 0.03,
 0.50,
 0.21
-
 BER
 0.453,
 0.823,
 0.034,
 0.503,
 0.891
-
-
 POISSON
 0.6754,
 0.0234,
 0.7892,
 0.5134,
 0.3331
-
-
 */
