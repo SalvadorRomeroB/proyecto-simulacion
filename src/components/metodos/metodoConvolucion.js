@@ -122,7 +122,7 @@ const MetodoConvolucion = () => {
   const calcDistBinomial = () => {
     let num_random = [];
     let valores_Xi = [];
-    let error = 1 - biProb;
+    let error = 1 - biProb * 0.01;
     let valores_df = [];
 
     for (let i = 0; i < biN; i++) {
