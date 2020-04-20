@@ -4,6 +4,11 @@ import chiSquareInverse from "inv-chisquare-cdf";
 const PruebaPoker = () => {
   const [nums, setNums] = useState([]);
   let [numbersCSVString, setNumbersCSVString] = useState("");
+  let [testRun, setTestRun] = useState(false);
+  let [disable, setDisable] = useState(true);
+  let [fillAlpha, setFillAlpa] = useState(false);
+  let [numlist, setnumList] = useState([]);
+
   const [categories, setCategories] = useState([
     { todoDif: 0 },
     { unPar: 0 },
@@ -33,9 +38,9 @@ const PruebaPoker = () => {
     { total: 0 },
   ]);
 
-  const [alpha, setAlpha] = useState(0.05);
+  const [alpha, setAlpha] = useState(0);
   const [x20, setx20] = useState("");
-  const [chi2, setChi2] = useState("");
+  const [chi2, setChi2] = useState(0);
 
   const class5D = ["TD", "1P", "2P", "1T", "TP", "P", "Q"];
   const prob5D = [0.3024, 0.504, 0.108, 0.009, 0.072, 0.0045, 0.0001];
@@ -48,6 +53,7 @@ const PruebaPoker = () => {
 
   const addCSVValues = () => {
     let numberList = numbersCSVString.split(",");
+    setnumList(numberList);
     let noNewLine = numberList.map((x) => x.replace(/(\r\n|\n|\r)/gm, ""));
     console.log("original", noNewLine);
     var noDot = noNewLine.map((s) => s.substring(2));
@@ -61,7 +67,11 @@ const PruebaPoker = () => {
     });
 
     setNums(sorted);
-    console.log(nums);
+    if (fillAlpha) {
+      setDisable(false);
+    } else {
+      setDisable(true);
+    }
   };
 
   const handleClasifications = () => {
@@ -120,8 +130,7 @@ const PruebaPoker = () => {
           todoDif++;
         }
       });
-
-      setCategories({
+      let tempCat = {
         todoDif: todoDif,
         unPar: unPar,
         dosPares: dosPar,
@@ -129,9 +138,9 @@ const PruebaPoker = () => {
         terciaPar: terciaPar,
         poker: poker,
         quintilla: quintilla,
-      });
-
-      console.log(categories);
+      };
+      setCategories(tempCat);
+      return tempCat;
     } else if (nums[0].length === 4) {
       let arr = nums.map((str) => {
         let first = str.split(str[0]).length - 1;
@@ -170,15 +179,18 @@ const PruebaPoker = () => {
         }
       });
 
-      setCategories({
+      let tempCat = {
         todoDif: todoDif,
         unPar: unPar,
         dosPares: dosPar,
         unaTercia: unaTercia,
         poker: poker,
-      });
+        terciaPar: 0,
+        quintilla: 0,
+      };
 
-      console.log(categories);
+      setCategories(tempCat);
+      return tempCat;
     } else if (nums[0].length === 3) {
       let arr = nums.map((str) => {
         let first = str.split(str[0]).length - 1;
@@ -201,24 +213,25 @@ const PruebaPoker = () => {
         }
       });
 
-      setCategories({
+      let tempCat = {
         todoDif: todoDif,
         unPar: unPar,
-        dosPares: dosPar,
         unaTercia: unaTercia,
         poker: poker,
-      });
+        terciaPar: 0,
+        quintilla: 0,
+      };
 
-      console.log(categories);
+      setCategories(tempCat);
+      return tempCat;
     }
   };
 
   const solve5D = () => {
-    handleClasifications();
+    let tempCat = handleClasifications();
 
     if (nums[0].length === 5) {
       let ei = prob5D.map((x) => parseFloat(x) * nums.length);
-      console.log(ei[0]);
       setEi({
         todoDif: ei[0],
         unPar: ei[1],
@@ -228,13 +241,13 @@ const PruebaPoker = () => {
         poker: ei[5],
         quintilla: ei[6],
       });
-      let td = Math.pow(ei[0] - categories.todoDif, 2) / ei[0];
-      let unP = Math.pow(ei[1] - categories.unPar, 2) / ei[1];
-      let dosP = Math.pow(ei[2] - categories.dosPares, 2) / ei[2];
-      let unT = Math.pow(ei[3] - categories.unaTercia, 2) / ei[3];
-      let terciaP = Math.pow(ei[4] - categories.terciaPar, 2) / ei[4];
-      let p = Math.pow(ei[5] - categories.poker, 2) / ei[5];
-      let q = Math.pow(ei[6] - categories.quintilla, 2) / ei[6];
+      let td = Math.pow(ei[0] - tempCat.todoDif, 2) / ei[0];
+      let unP = Math.pow(ei[1] - tempCat.unPar, 2) / ei[1];
+      let dosP = Math.pow(ei[2] - tempCat.dosPares, 2) / ei[2];
+      let unT = Math.pow(ei[3] - tempCat.unaTercia, 2) / ei[3];
+      let terciaP = Math.pow(ei[4] - tempCat.terciaPar, 2) / ei[4];
+      let p = Math.pow(ei[5] - tempCat.poker, 2) / ei[5];
+      let q = Math.pow(ei[6] - tempCat.quintilla, 2) / ei[6];
       let total = td + unP + dosP + unT + terciaP + p + q;
       setEiOi({
         todoDif: td,
@@ -246,11 +259,10 @@ const PruebaPoker = () => {
         quintilla: q,
         total: total,
       });
-      console.log(total);
+
       setx20(total);
       let chisq = chiSquareInverse.invChiSquareCDF(1 - alpha, 6);
       setChi2(chisq);
-      console.log(chisq);
     } else if (nums[0].length === 4) {
       let ei = prob4D.map((x) => parseFloat(x) * nums.length);
       console.log("ENTRA:", ei);
@@ -259,16 +271,16 @@ const PruebaPoker = () => {
         unPar: ei[1],
         dosPares: ei[2],
         unaTercia: ei[3],
-        terciaPar: "No Aplica",
+        terciaPar: 0,
         poker: ei[4],
-        quintilla: "No Aplica",
+        quintilla: 0,
       });
-      let td = Math.pow(ei[0] - categories.todoDif, 2) / ei[0];
-      let unP = Math.pow(ei[1] - categories.unPar, 2) / ei[1];
-      let dosP = Math.pow(ei[2] - categories.dosPares, 2) / ei[2];
-      let unT = Math.pow(ei[3] - categories.unaTercia, 2) / ei[3];
+      let td = Math.pow(ei[0] - tempCat.todoDif, 2) / ei[0];
+      let unP = Math.pow(ei[1] - tempCat.unPar, 2) / ei[1];
+      let dosP = Math.pow(ei[2] - tempCat.dosPares, 2) / ei[2];
+      let unT = Math.pow(ei[3] - tempCat.unaTercia, 2) / ei[3];
       let terciaP = 0;
-      let p = Math.pow(ei[4] - categories.poker, 2) / ei[4];
+      let p = Math.pow(ei[4] - tempCat.poker, 2) / ei[4];
       let q = 0;
       let total = td + unP + dosP + unT + terciaP + p + q;
       setEiOi({
@@ -276,9 +288,9 @@ const PruebaPoker = () => {
         unPar: unP,
         dosPares: dosP,
         unaTercia: unT,
-        terciaPar: "No Aplica",
+        terciaPar: 0,
         poker: p,
-        quintilla: "No Aplica",
+        quintilla: 0,
         total: total,
       });
       console.log(total);
@@ -291,16 +303,16 @@ const PruebaPoker = () => {
       setEi({
         todoDif: ei[0],
         unPar: ei[1],
-        dosPares: "No Aplica",
+        dosPares: 0,
         unaTercia: ei[2],
-        terciaPar: "No Aplica",
-        poker: "No Aplica",
-        quintilla: "No Aplica",
+        terciaPar: 0,
+        poker: 0,
+        quintilla: 0,
       });
-      let td = Math.pow(ei[0] - categories.todoDif, 2) / ei[0];
-      let unP = Math.pow(ei[1] - categories.unPar, 2) / ei[1];
+      let td = Math.pow(ei[0] - tempCat.todoDif, 2) / ei[0];
+      let unP = Math.pow(ei[1] - tempCat.unPar, 2) / ei[1];
       let dosP = 0;
-      let unT = Math.pow(ei[2] - categories.unaTercia, 2) / ei[2];
+      let unT = Math.pow(ei[2] - tempCat.unaTercia, 2) / ei[2];
       let terciaP = 0;
       let p = 0;
       let q = 0;
@@ -308,42 +320,48 @@ const PruebaPoker = () => {
       setEiOi({
         todoDif: td,
         unPar: unP,
-        dosPares: "No Aplica",
+        dosPares: 0,
         unaTercia: unT,
-        terciaPar: "No Aplica",
-        poker: "No Aplica",
-        quintilla: "No Aplica",
+        terciaPar: 0,
+        poker: 0,
+        quintilla: 0,
         total: total,
       });
-      console.log(total);
+
       setx20(total);
       let chisq = chiSquareInverse.invChiSquareCDF(1 - alpha, 6);
       setChi2(chisq);
-      console.log(chisq);
     }
+    setTestRun(true);
   };
 
   const handleConclusion = () => {
     if (chi2 < x20) {
       return (
-        <div className="card-body">
-          <h5 className="card-title">
-            El estadístico X2o = {x20}, comparándolo con nuestro estadístico de
-            tabla = {chi2}, entonces rechazamos que los números del conjunto
-            sean independientes
-          </h5>
-          <div className="row"></div>
+        <div>
+          <div className="card-header">Se rechaza la hipotesis</div>
+          <div className="card-body">
+            <h5 className="card-title">
+              El estadístico X2o = {x20.toFixed(4)}, comparándolo con nuestro
+              estadístico de tabla = {chi2.toFixed(4)}, entonces rechazamos que
+              los números del conjunto sean independientes, con un nivel de
+              confianza {(1 - alpha) * 100}%
+            </h5>
+          </div>
         </div>
       );
     } else {
       return (
-        <div className="card-body">
-          <h5 className="card-title">
-            El estadístico X2o = {x20}, comparándolo con nuestro estadístico de
-            tabla = {chi2}, entonces NO rechazamos que los números del conjunto
-            sean independientes
-          </h5>
-          <div className="row"></div>
+        <div>
+          <div className="card-header">No se puede rechazar la hipotesis</div>
+          <div className="card-body">
+            <h5 className="card-title">
+              El estadístico X2o = {x20.toFixed(4)}, comparándolo con nuestro
+              estadístico de tabla = {chi2.toFixed(4)}, entonces NO rechazamos
+              que los números del conjunto sean independientes, con un nivel de
+              confianza {(1 - alpha) * 100}%
+            </h5>
+          </div>
         </div>
       );
     }
@@ -351,100 +369,145 @@ const PruebaPoker = () => {
 
   return (
     <div>
-      <p>Alpha:</p>
-      <input
-        placeholder="Alpha"
-        value={alpha}
-        onChange={(e) => setAlpha(e.target.value)}
-      />
-      <p>Lista de numeros:</p>
+      <div className="row d-flex justify-content-center">
+        <h1>Prueba de Poker</h1>
+      </div>
 
-      <textarea
-        id="csv"
-        type="text"
-        value={numbersCSVString}
-        onChange={(e) => setNumbersCSVString(e.target.value)}
-      />
+      <small>
+        <h7>Planteamiento de Hipotesis:</h7>
+        <div className="col-12">
+          <h7>H0</h7>
+          <p>
+            El estadístico X0^2 comparándolo con nuestro estadístico de tabla ,
+            entonces no rechazamos que los números del conjunto sean
+            independientes, con un nivel de confianza {(1 - alpha) * 100}%
+          </p>
+        </div>
+        <div className="col-12">
+          <h7>H1</h7>
+          <p>
+            El estadístico X0^2, comparándolo con nuestro estadístico de tabla,
+            entonces rechazamos que los números del conjunto sean
+            independientes, con un nivel de confianza {(1 - alpha) * 100}%
+          </p>
+        </div>
+      </small>
+      <label for="semilla">Alpha:</label>
+
+      <div className="row poker">
+        <input
+          placeholder="Alpha"
+          value={alpha}
+          onChange={(e) => {
+            setAlpha(e.target.value);
+            setFillAlpa(true);
+          }}
+        />
+      </div>
+      <div className="row">
+        <div>
+          <p>
+            {" "}
+            Ingresa los numeros separados por comas y en formato "0.Num", no
+            ".Num" :
+          </p>
+
+          <textarea
+            id="csv"
+            type="text"
+            value={numbersCSVString}
+            onChange={(e) => setNumbersCSVString(e.target.value)}
+          />
+        </div>
+        <div className="col-6 d-flex flex-wrap inputs">
+          {numlist.map((num) => {
+            return <p className="number-list">{num}</p>;
+          })}
+        </div>
+      </div>
       <div className="btn btn-primary" onClick={() => addCSVValues()}>
         Agregar Numeros
       </div>
-      <button className="btn btn-primary" onClick={() => solve5D()}>
+      <button
+        className="btn btn-primary"
+        disabled={disable}
+        onClick={() => solve5D()}
+      >
         Correr Prueba
       </button>
-
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">Categorias</th>
-            <th scope="col">Oi</th>
-            <th scope="col">Ei</th>
-            <th scope="col"> (Ei-Oi)^2/Ei </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>TD</td>
-            <td>{categories.todoDif}</td>
-            <td>{ei.todoDif}</td>
-            <td>{eiOi.todoDif}</td>
-          </tr>
-          <tr>
-            <td>1P</td>
-            <td>{categories.unPar}</td>
-            <td>{ei.unPar}</td>
-            <td>{eiOi.unPar}</td>
-          </tr>
-          <tr>
-            <td>2P</td>
-            <td>{categories.dosPares}</td>
-            <td>{ei.dosPares}</td>
-            <td>{eiOi.dosPares}</td>
-          </tr>
-          <tr>
-            <td>T</td>
-            <td>{categories.unaTercia}</td>
-            <td>{ei.unaTercia}</td>
-            <td>{eiOi.unaTercia}</td>
-          </tr>
-          <tr>
-            <td>TP</td>
-            <td>{categories.terciaPar}</td>
-            <td>{categories.terciaPar}</td>
-            <td>{eiOi.terciaPar}</td>
-          </tr>
-          <tr>
-            <td>P</td>
-            <td>{categories.poker}</td>
-            <td>{ei.poker}</td>
-            <td>{eiOi.poker}</td>
-          </tr>
-          <tr>
-            <td>Q</td>
-            <td>{categories.quintilla}</td>
-            <td>{ei.quintilla}</td>
-            <td>{eiOi.quintilla}</td>
-          </tr>
-          <tr>
-            <td>Total</td>
-            <td></td>
-            <td></td>
-            <td>{eiOi.total}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td>CHISQRINV </td>
-            <td>{chi2}</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>
-        <small>
-          Ingresa los numeros separados por comas y en formato "0.Num", no
-          ".Num"
-        </small>
-      </p>
-      {handleConclusion()}
+      {testRun ? (
+        <div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Categorias</th>
+                <th scope="col">Oi</th>
+                <th scope="col">Ei</th>
+                <th scope="col"> (Ei-Oi)^2/Ei </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>TD</td>
+                <td>{categories.todoDif}</td>
+                <td>{ei.todoDif.toFixed(4)}</td>
+                <td>{eiOi.todoDif.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>1P</td>
+                <td>{categories.unPar}</td>
+                <td>{ei.unPar.toFixed(4)}</td>
+                <td>{eiOi.unPar.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>2P</td>
+                <td>{categories.dosPares}</td>
+                <td>{ei.dosPares.toFixed(4)}</td>
+                <td>{eiOi.dosPares.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>T</td>
+                <td>{categories.unaTercia}</td>
+                <td>{ei.unaTercia.toFixed(4)}</td>
+                <td>{eiOi.unaTercia.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>TP</td>
+                <td>{categories.terciaPar}</td>
+                <td>{categories.terciaPar.toFixed(4)}</td>
+                <td>{eiOi.terciaPar.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>P</td>
+                <td>{categories.poker}</td>
+                <td>{ei.poker.toFixed(4)}</td>
+                <td>{eiOi.poker.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>Q</td>
+                <td>{categories.quintilla}</td>
+                <td>{ei.quintilla.toFixed(4)}</td>
+                <td>{eiOi.quintilla.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td></td>
+                <td></td>
+                <td>{eiOi.total.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td>CHISQRINV </td>
+                <td>{chi2.toFixed(4)}</td>
+              </tr>
+            </tbody>
+          </table>
+          {handleConclusion()}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

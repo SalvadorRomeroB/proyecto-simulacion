@@ -3,6 +3,7 @@ import "./styles/App.scss";
 import Header from "./components/header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+import TypeSelector from "./components/typeSelector";
 import AlgoritmoCuadradosMedios from "./components/algoritmos/algoritmoCuadradosMedios";
 import AlgoritmoMultiplicadorConstante from "./components/algoritmos/algoritmoMultiplicadorConstante";
 import AlgoritmoLineal from "./components/algoritmos/algoritmoLineal";
@@ -28,6 +29,7 @@ function App() {
   return (
     <Router>
       <Header />
+      <TypeSelector />
       <div className="body">
         <Switch>
           <div className="container rest-body">
