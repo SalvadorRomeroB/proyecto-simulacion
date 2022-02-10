@@ -13,7 +13,7 @@
     "chi-squared": "^1.1.0",
     "inv-chisquare-cdf": "^1.0.1",
     "jstat": "^1.9.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react-bootstrap": "^1.0.0",
     "simple-statistics": "^7.0.8",
     "react-router-dom": "^5.1.2"
